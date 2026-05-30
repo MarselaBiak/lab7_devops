@@ -3,6 +3,7 @@
 
 from flask import Flask, request, jsonify
 import random
+import os
 
 app = Flask(__name__)
 
@@ -121,7 +122,8 @@ def genetic_algorithm(max_power):
 @app.route('/calculate', methods=['GET'])
 def calculate():
 
-    max_power = int(request.args.get('max_power', 70))
+    default_max_power = int(os.environ.get('DEFAULT_MAX_POWER', 70))
+    max_power = int(request.args.get('max_power', default_max_power))
 
     best_solution = genetic_algorithm(max_power)
 
@@ -150,4 +152,5 @@ def calculate():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
